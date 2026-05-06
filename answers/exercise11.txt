@@ -1,0 +1,52 @@
+santeri@DESKTOP-K71CIS0:~/FullStackOpen/FullStackOpen-Containers/todo-app/todo-backend$ docker exec -it redis redis-cli
+127.0.0.1:6379> KEYS *
+1) "added_todos"
+127.0.0.1:6379> GET added_todos
+"3"
+127.0.0.1:6379> SET added_todos 9001
+OK
+127.0.0.1:6379> GET added_todos
+"9001"
+127.0.0.1:6379> exit
+santeri@DESKTOP-K71CIS0:~/FullStackOpen/FullStackOpen-Containers/todo-app/todo-backend$ REDIS_URL=redis://localhost:6379 MONGO_URL=mongodb://the_username:the_password@localhost:3456/the_database npm run dev MONGO_URL=mongodb://the_username:the_password@localhost:3456/the_database npm run dev
+
+> todo-express-backend@0.0.0 dev
+> nodemon ./bin/www MONGO_URL=mongodb://the_username:***@localhost:3456/the_database npm run dev
+
+[nodemon] 3.1.14
+[nodemon] to restart at any time, enter `rs`
+[nodemon] watching path(s): *.*
+[nodemon] watching extensions: js,mjs,cjs,json
+[nodemon] starting `node ./bin/www MONGO_URL=mongodb://the_username:the_password@localhost:3456/the_database npm run dev`
+Connected to Redis
+GET /statistics 200 2.148 ms - 20
+POST /todos 200 15.715 ms - 87
+GET /todos 200 5.796 ms - 338
+GET /statistics 200 0.946 ms - 20
+^C
+santeri@DESKTOP-K71CIS0:~/FullStackOpen/FullStackOpen-Containers/todo-app/todo-backend$ docker exec -it redis redis-cli
+127.0.0.1:6379> GET added_todos
+"9002"
+127.0.0.1:6379> DEL added_todos
+(integer) 1
+127.0.0.1:6379> GET added_todos
+(nil)
+127.0.0.1:6379> exit
+santeri@DESKTOP-K71CIS0:~/FullStackOpen/FullStackOpen-Containers/todo-app/todo-backend$ REDIS_URL=redis://localhost:6379 MONGO_URL=mongodb://the_username:the_password@localhost:3456/the_database npm run dev MONGO_URL=mongodb://the_username:the_password@localhost:3456/the_database npm run dev
+
+> todo-express-backend@0.0.0 dev
+> nodemon ./bin/www MONGO_URL=mongodb://the_username:***@localhost:3456/the_database npm run dev
+
+[nodemon] 3.1.14
+[nodemon] to restart at any time, enter `rs`
+[nodemon] watching path(s): *.*
+[nodemon] watching extensions: js,mjs,cjs,json
+[nodemon] starting `node ./bin/www MONGO_URL=mongodb://the_username:the_password@localhost:3456/the_database npm run dev`
+Connected to Redis
+POST /todos 200 13.428 ms - 87
+^C
+santeri@DESKTOP-K71CIS0:~/FullStackOpen/FullStackOpen-Containers/todo-app/todo-backend$ docker exec -it redis redis-cli
+127.0.0.1:6379> GET added_todos
+"1"
+127.0.0.1:6379> exit
+santeri@DESKTOP-K71CIS0:~/FullStackOpen/FullStackOpen-Containers/todo-app/todo-backend$
