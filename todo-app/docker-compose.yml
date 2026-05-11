@@ -1,0 +1,61 @@
+version: "3.8"
+
+services:
+  app:
+    image: todo-front
+    build:
+      context: ./todo-frontend
+      dockerfile: Dockerfile
+      # set build arg so built frontend points to the proxy path /api
+      args:
+        - VITE_BACKEND_URL=/api
+    # frontend image is an nginx static server; no need to publish its port
+    # nginx reverse-proxy will handle publishing on 8080
+    container_name: todo-front
+
+  backend:
+    image: todo-backend
+    build:
+      context: ./todo-backend
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=production
+      - REDIS_URL=redis://redis:6379
+      - MONGO_URL=mongodb://root:example@mongo:27017/the_database?authSource=admin
+    depends_on:
+      - mongo
+      - redis
+    container_name: todo-backend
+
+  mongo:
+    image: initialized-mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: the_database
+    volumes:
+      - ./todo-backend/mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - mongo_data:/data/db
+    container_name: mongo
+
+  redis:
+    image: redis:7
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    container_name: redis
+
+  nginx:
+    image: nginx:1.29
+    ports:
+      - 8080:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - app
+      - backend
+    container_name: reverse-proxy
+
+volumes:
+  mongo_data:
+  redis_data:
